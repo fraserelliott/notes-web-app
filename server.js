@@ -4,6 +4,8 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 
+const usersController = require("./controllers/users.controller")
+
 const app = express();
 
 const options = {
@@ -12,6 +14,8 @@ const options = {
 };
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.put("/api/users", usersController.createUser);
 
 https.createServer(options, app).listen(443, () => {
   console.log("HTTPS server running on port 443 at https://127.0.0.1:443");
