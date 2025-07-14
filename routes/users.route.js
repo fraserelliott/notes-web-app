@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const usersController = require("./controllers/users.controller")
+const usersController = require("../controllers/users.controller")
 
 const { FailSchema, StringField } = require('@fraserelliott/fail');
 const { validate } = require("../middleware/inputValidation.middleware");
