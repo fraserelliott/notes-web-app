@@ -17,6 +17,11 @@ app.use(express.json());
 
 app.use("/api", routes);
 
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message); // log cleanly to console
+  res.status(500).json({ error: err.message});
+});
+
 https.createServer(options, app).listen(443, () => {
   console.log("HTTPS server running on port 443 at https://127.0.0.1:443");
 });
