@@ -31,7 +31,22 @@ exports.createUser = async (req, res, next) => {
                 res.status(409).json({ error: "Username already exists" });
                 break;
             default:
+                console.log(error);
                 res.status(500).json({ error: "Failed to create user" });
         }
     }
 };
+
+exports.deleteUser = async (req, res, next) => {
+    try {
+        const deleted = await dbService.deleteUser(req.user.uuid);
+        
+        if (deleted === 0) {
+            res.status(403).json({ error: "User not found or unauthorized" })
+        }
+
+        res.status(204);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete user" });
+    }
+}
