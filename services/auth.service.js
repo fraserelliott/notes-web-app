@@ -1,6 +1,6 @@
-dbService = require("./database.service");
-bcrypt = require("bcrypt");
-jwt = require("jsonwebtoken")
+const dbService = require("./database.service");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 
 exports.login = async (username, password) => {
     const user = await dbService.findUserByUsername(username);

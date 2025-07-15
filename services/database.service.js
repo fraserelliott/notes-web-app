@@ -13,12 +13,12 @@ exports.createUser = async (data) => {
 };
 
 exports.deleteUser = async (uuid) => {
-    const affected = await sql`
+    const [user] = await sql`
         DELETE FROM users
         WHERE uuid=${uuid}
-        RETURNING id
+        RETURNING uuid
     `
-    return affected.length;
+    return user;
 };
 
 exports.findUserByUsername = async (username) => {
@@ -28,3 +28,39 @@ exports.findUserByUsername = async (username) => {
     `;
     return user;
 };
+
+exports.createNote = async (uuid, title, content) => {
+    const [note] = await sql`
+        INSERT INTO notes (user_uuid, title, content)
+        VALUES (${uuid}, ${title}, ${content})
+        RETURNING *
+    `;
+    return note;
+}
+
+exports.getNotesForUser = async (uuid) => {
+    const notes = await sql`
+        SELECT * FROM notes
+        WHERE user_uuid = ${uuid}
+    `;
+    return notes;
+}
+
+exports.updateNote = async (uuid, noteId, title, content) => {
+    const [note] = await sql`
+        UPDATE notes
+        SET updated_at = now(), title=${title}, content=${content}
+        WHERE id=${noteId} AND user_uuid=${uuid}
+        RETURNING *
+    `;
+    return note;
+}
+
+exports.deleteNote = async (uuid, noteId) => {
+    const [note] = await sql`
+        DELETE FROM notes
+        WHERE id=${noteId} AND user_uuid=${uuid}
+        RETURNING *
+    `;
+    return note;
+}

@@ -16,32 +16,34 @@ exports.createUser = async (req, res, next) => {
         const user = await dbService.createUser(req.body);
 
         res.status(201).json({
-            message: "User created successfully",
-            user
+            message: "User created successfully.",
+            "uuid": user.uuid
         });
 
     } catch (error) {
         switch (error.code) {
             case PostgresErrorCodes.UNIQUE_VIOLATION:
-                res.status(409).json({ error: "Username already exists" });
+                res.status(409).json({ error: "Username already exists." });
                 break;
             default:
                 console.log(error);
-                res.status(500).json({ error: "Failed to create user" });
+                res.status(500).json({ error: "Failed to create user." });
         }
     }
 };
 
 exports.deleteUser = async (req, res, next) => {
     try {
-        const deleted = await dbService.deleteUser(req.user.uuid);
+        const user = await dbService.deleteUser(req.user.uuid);
         
-        if (deleted === 0) {
-            res.status(403).json({ error: "User not found or unauthorized" })
-        }
+        if (!user)
+            res.status(403).json({ error: "User not found or unauthorized." })
 
-        res.status(204);
+        res.status(204).json({
+            message: "User deleted successfully.",
+            user
+        });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete user" });
+        res.status(500).json({ error: "Failed to delete user." });
     }
 }

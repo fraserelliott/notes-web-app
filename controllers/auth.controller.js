@@ -1,7 +1,6 @@
 const authService = require("../services/auth.service");
 
 exports.login = async(req, res, next) => {
-    console.log(req.body);
     const username = req.body.username;
     const password = req.body.password;
 
@@ -13,6 +12,6 @@ exports.login = async(req, res, next) => {
             "uuid": user.uuid
         });
     } catch (error) {
-        res.status(401).json({ error: "Invalid username or password." })
+        return res.status(401).json({ error: "Invalid username or password." })
     }
 };
