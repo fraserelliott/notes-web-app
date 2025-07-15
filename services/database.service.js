@@ -18,6 +18,13 @@ exports.deleteUser = async (uuid) => {
         WHERE uuid=${uuid}
         RETURNING id
     `
-
     return affected.length;
-}
+};
+
+exports.findUserByUsername = async (username) => {
+    const [user] = await sql`
+        SELECT * FROM users
+        WHERE username = ${username}
+    `;
+    return user;
+};
