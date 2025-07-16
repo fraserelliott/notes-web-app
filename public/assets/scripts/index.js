@@ -19,15 +19,7 @@ loginForm.addEventListener("submit", async (e) => {
 
     // TODO: input validation
 
-    try {
-        const data = await attemptLogin(username, password);
-        sessionStorage.setItem("auth-token", data.token);
-        sessionStorage.setItem("username", username)
-        window.location.replace("./notes.html");
-    } catch (err) {
-        console.error(err.message);
-        // TODO: error message popup
-    }
+    await attemptLogin(username, password);
 });
 
 const signupForm = document.getElementById("form-signup");
@@ -35,53 +27,57 @@ signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = signupForm.username.value;
     const password = signupForm.password.value;
-
     // TODO: input validation
 
-    try {
-        await attemptSignup(username, password);
-        const data = await attemptLogin(username, password);
-        sessionStorage.setItem("auth-token", data.token);
-        user = {
-            username: data.username,
-            uuid: data.uuid
-        };
-        sessionStorage.setItem("user", JSON.stringify(user));
-        window.location.replace("./notes.html");
-    } catch (err) {
-        console.error(err.message);
-        // TODO: error message popup
-    }
+    await attemptSignup(username, password);
+    await attemptLogin(username, password);
 });
 
 async function attemptLogin(username, password) {
-    const res = await fetch("https://127.0.0.1:443/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch("https://127.0.0.1:443/api/auth", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
+        if (!res.ok) {
+            // TODO: error message popup with data.error
+            return;
+        }
 
-    if (!res.ok) {
-        throw new Error(data.error || "Login failed.");
-        // TODO: error message popup
+        const data = await res.json();
+
+        console.log(data);
+
+        sessionStorage.setItem("auth-token", data.token);
+        const user = {
+            username: data.username,
+            uuid: data.uuid
+        };
+
+        console.log("User: ", user)
+        sessionStorage.setItem("user", JSON.stringify(user));
+        window.location.replace("./notes.html");
+    } catch (err) {
+        // TODO: error message popup with data.error
     }
-
-    return data;
 }
 
 async function attemptSignup(username, password) {
-    const res = await fetch("https://127.0.0.1:443/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch("https://127.0.0.1:443/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json().catch(() => ({}));
+        const data = await res.json().catch(() => ({}));
 
-    if (!res.ok) {
-        throw new Error(data.error || "Login failed.");
-        // TODO: error message popup
+        if (!res.ok) {
+            // TODO: error message popup with data.error
+        }
+    } catch (err) {
+        // TODO: error message popup with data.error
     }
 }
