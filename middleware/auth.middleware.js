@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 
-function validateToken() {
+exports.validateToken = () => {
     return (req, res, next) => {
+        // Expect a header authorization with the form "Bearer: <token>"
+        // Adds req.user.uuid on success
         if (!req.headers["authorization"])
             return _invalidToken(res);
 
@@ -12,6 +14,8 @@ function validateToken() {
 
         try {
             const decoded = jwt.verify(auth[1], process.env.JWT_SECRET);
+            if (!decoded.uuid) // bad payload
+                _invalidToken(res);
 
             req.user = decoded;
 
@@ -26,6 +30,4 @@ function _invalidToken(res) {
     return res.status(401).json({
         error: "Action requires authentication."
     });
-}
-
-module.exports = { validateToken }
+};

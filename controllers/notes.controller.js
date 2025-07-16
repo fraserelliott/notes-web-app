@@ -1,7 +1,7 @@
 const dbService = require("../services/database.service");
 
 exports.createNote = async (req, res, next) => {
-    const uuid = req.user.uuid;
+    const uuid = req.user.uuid; // added by authorisation middleware
     const title = req.body.title;
     const content = req.body.content;
 
@@ -20,7 +20,7 @@ exports.createNote = async (req, res, next) => {
 };
 
 exports.getNotesForUser = async (req, res, next) => {
-    const uuid = req.user.uuid;
+    const uuid = req.user.uuid; // added by authorisation middleware
 
     try {
         const notes = await dbService.getNotesForUser(uuid);
@@ -32,7 +32,7 @@ exports.getNotesForUser = async (req, res, next) => {
 };
 
 exports.updateNote = async (req, res, next) => {
-    const uuid = req.user.uuid;
+    const uuid = req.user.uuid; // added by authorisation middleware
     const noteId = req.params.id;
     const title = req.body.title;
     const content = req.body.content;
@@ -52,7 +52,7 @@ exports.updateNote = async (req, res, next) => {
 };
 
 exports.deleteNote = async (req, res, next) => {
-    const uuid = req.user.uuid;
+    const uuid = req.user.uuid; // added by authorisation middleware
     const noteId = req.params.id;
 
     try {

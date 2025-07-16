@@ -6,6 +6,7 @@ exports.login = async(req, res, next) => {
 
     try {
         const { user, token } = await authService.login(username, password);
+        // No need to check these here as the service will throw an error if details are invalid.
         res.status(200).json({
             token,
             "username": user.username,

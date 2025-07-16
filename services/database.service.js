@@ -3,10 +3,10 @@ const sql = postgres(process.env.DATABASEURL, {
     ssl: "require"
 });
 
-exports.createUser = async (data) => {
+exports.createUser = async (username, pwhash) => {
     const [user] = await sql`
         INSERT INTO users (username, pwhash)
-        VALUES  (${data.username}, ${data.pwhash})
+        VALUES  (${username}, ${pwhash})
         RETURNING uuid
     `;
     return user;

@@ -1,6 +1,6 @@
 const { FailSchema } = require("@fraserelliott/fail");
 
-function validate(schema) {
+exports.validate = (schema) => {
     return (req, res, next) => {
         const result = schema.validate(req.body);
 
@@ -13,5 +13,3 @@ function validate(schema) {
         next();
     }
 }
-
-module.exports = { validate }

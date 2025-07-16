@@ -10,10 +10,10 @@ const PostgresErrorCodes = {
 
 exports.createUser = async (req, res, next) => {
     try {
-        req.body.pwhash = await bcrypt.hash(req.body.password, saltRounds);
-        delete req.body.password;
-        
-        const user = await dbService.createUser(req.body);
+        username = req.body.username;
+        pwhash = await bcrypt.hash(req.body.password, saltRounds);
+
+        const user = await dbService.createUser(username, pwhash);
 
         res.status(201).json({
             message: "User created successfully.",
