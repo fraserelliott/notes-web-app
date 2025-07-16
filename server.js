@@ -4,6 +4,7 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const routes = require("./routes/index.route")
+const cors = require("cors");
 
 const app = express();
 
@@ -15,6 +16,7 @@ const options = {
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(cors());
 
 app.use("/api", routes);
 

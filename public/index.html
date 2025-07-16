@@ -1,16 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="./assets/css/styles.css" rel="stylesheet">
     <title>Document</title>
 </head>
+
 <body>
-    <form>
-        <label for="input-username">Username: </label>
-        <input type="text" id="input-username">
-        <label for="input-password">Username: </label>
-        <input type="password" id="input-password">
-    </form>
+
+    <section class="indexform" id="section-login">
+        <form id="form-login" class="indexform w-100">
+            <label for="input-username">Username: </label>
+            <input type="text" id="input-username" name="username">
+            <label for="input-password">Username: </label>
+            <input type="password" id="input-password" name="password">
+            <button id="btn-login" type="submit">Login</button>
+        </form>
+        <button id="btn-show-signup">Sign Up</button>
+    </section>
+
+    <section class="indexform d-none" id="section-signup">
+        <form id="form-signup" class="indexform w-100">
+            <label for="input-signup-username">Username: </label>
+            <input type="text" id="input-signup-username" name="username">
+            <label for="input-signup-password">Username: </label>
+            <input type="password" id="input-password-signup" name="password">
+            <button id="btn-signup" type="submit">Register</button>
+        </form>
+        <button id="btn-show-login">Back to Login</button>
+    </section>
+
+    <script type="module" src="./assets/scripts/index.js"></script>
 </body>
+
 </html>

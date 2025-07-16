@@ -1,0 +1,26 @@
+.indexform {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+}
+
+.banner {
+    background-image: url("../images/banner.png");
+    height: 100px;
+    position: relative;
+}
+
+.page-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#btn-menu {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
