@@ -33,7 +33,13 @@ exports.createNote = async (uuid, title, content) => {
     const [note] = await sql`
         INSERT INTO notes (user_uuid, title, content)
         VALUES (${uuid}, ${title}, ${content})
-        RETURNING *
+        RETURNING
+            id,
+            user_uuid,
+            title,
+            content,
+            created_at::timestamptz AS created_at,
+            updated_at::timestamptz AS updated_at
     `;
     return note;
 }
@@ -59,7 +65,13 @@ exports.updateNote = async (uuid, noteId, title, content) => {
         UPDATE notes
         SET updated_at=now(), title=${title}, content=${content}
         WHERE id=${noteId} AND user_uuid=${uuid}
-        RETURNING *
+        RETURNING
+            id,
+            user_uuid,
+            title,
+            content,
+            created_at::timestamptz AS created_at,
+            updated_at::timestamptz AS updated_at
     `;
     return note;
 }

@@ -34,3 +34,18 @@
 .accordion-header-btn {
     width: 3rem;
 }
+
+#textarea-note-title {
+    overflow: hidden;
+    height: auto;
+}
+
+textarea {
+    resize: none;
+}
+
+/* bootstrap overrides */
+
+.modal-body {
+    height: 50vh;
+}

@@ -1,9 +1,27 @@
+const noteModalStates = {
+    ADDNOTE: 0,
+    EDITNOTE: 1
+};
+let noteModalState;
+let editingNote;
 const { authToken, user } = loadSessionData();
 
 document.getElementById("a-logout").addEventListener("click", logout);
 document.getElementById("btn-menu").textContent = `\u{1F464}${user.username}`;
+document.getElementById("btn-new-note").addEventListener("click", showNewNoteModal);
+document.getElementById("btn-save-note").addEventListener("click", saveNoteModal);
 
-getNotes(); // Run this on startup to populate page and it has an automated logout for malformed/missing sessionStorage data
+const modalEl = document.getElementById("modal-note");
+const modal = new bootstrap.Modal(modalEl);
+
+const titleInput = document.getElementById("textarea-note-title");
+titleInput.addEventListener("input", () => {
+    titleInput.style.height = "auto";
+    titleInput.style.height = titleInput.scrollHeight + "px";
+    // TODO: trim to max length
+});
+
+getNotes(); // Run this on page load to populate page, it has an automated logout for malformed/missing sessionStorage data
 
 function loadSessionData() {
     try {
@@ -31,17 +49,16 @@ async function getNotes() {
             headers: { "Authorization": `Bearer ${authToken}` }
         });
         const data = await res.json();
-        console.log(data);
 
         data.forEach(note => {
-            addNote(note);
+            addNote(note, false);
         });
     } catch (err) {
         // TODO: error message popup with data.error
     }
 }
 
-function addNote(note) {
+function addNote(note, addToTop) {
     const editBtnId = `btnEdit${note.id}`;
     const deleteBtnId = `btnDelete${note.id}`;
     const collapseId = `collapse${note.id}`;
@@ -83,7 +100,10 @@ function addNote(note) {
     divEl.querySelector(`#${editBtnId}`).addEventListener("click", () => handleEdit(note));
     divEl.querySelector(`#${deleteBtnId}`).addEventListener("click", () => handleDelete(note));
 
-    document.getElementById("main-notes").appendChild(divEl);
+    if (addToTop)
+        document.getElementById("main-notes").prepend(divEl);
+    else
+        document.getElementById("main-notes").appendChild(divEl);
 }
 
 function formatTime(utcDateString) {
@@ -107,11 +127,63 @@ function formatTime(utcDateString) {
 }
 
 function handleEdit(note) {
-    // Open an edit form, modal, etc.
-    console.log(`Editing note ${note.id}`);
+    // set variables used in the editNoteFromModal function
+    editingNote = note;
+    noteModalState = noteModalStates.EDITNOTE;
+    document.getElementById("textarea-note-title").value = note.title;
+    document.getElementById("textarea-note-content").value = note.content;
+    modal.show();
 }
 
 function handleDelete(note) {
     // Confirm and delete the note
     console.log(`Deleting note ${note.id}`);
+}
+
+function showNewNoteModal() {
+    // Reset values for title and content textareas. Set variable used in saveNoteModal function called by the modal's save button
+    document.getElementById("textarea-note-title").value = "";
+    document.getElementById("textarea-note-content").value = "";
+    noteModalState = noteModalStates.ADDNOTE;
+    modal.show();
+}
+
+function saveNoteModal() {
+    console.log(`saveNoteModal called. noteModalState=${noteModalState}`);
+    switch (noteModalState) {
+        case noteModalStates.ADDNOTE:
+            addNoteFromModal();
+            break;
+    }
+}
+
+async function addNoteFromModal() {
+    try {
+        const title = document.getElementById("textarea-note-title").value.trim();
+        const content = document.getElementById("textarea-note-content").value.trim();
+        console.log(`title=${title}, content=${content}`);
+        const res = await fetch("/api/notes", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${authToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ title, content })
+        });
+        const data = await res.json();
+        console.log("data: ", data);
+
+        if (!res.ok) {
+            console.error("Error creating note: ", data.error);
+            // TODO: error message popup with data.error
+            return;
+        }
+        
+        addNote(data.note, true);
+        modal.hide();
+    } catch (err) {
+        // TODO: error message popup with data.error
+        console.error(err.message);
+    }
+}
+
+function editNoteFromModal() {
+
 }
