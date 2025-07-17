@@ -1,10 +1,12 @@
 document.getElementById("a-logout").addEventListener("click", logout);
 
-const { authToken, user } = loadData();
+const { authToken, user } = loadSessionData();
 
 document.getElementById("btn-menu").textContent = `\u{1F464}${user.username}`;
 
-function loadData() {
+getNotes();
+
+function loadSessionData() {
     try {
         let authToken = sessionStorage.getItem("auth-token");
         let user = JSON.parse(sessionStorage.getItem("user"));
@@ -24,5 +26,93 @@ function logout() {
 }
 
 async function getNotes() {
+    try {
+        const res = await fetch("/api/notes", {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        console.log(data);
+        data.forEach(note => {
+            addNote(note);
+        });
+    } catch (err) {
+        // TODO: error message popup with data.error
+    }
+}
 
+function addNote(note) {
+    console.log("Adding note: ", note);
+    const editBtnId = `btnEdit${note.id}`;
+    const deleteBtnId = `btnDelete${note.id}`;
+    const collapseId = `collapse${note.id}`;
+    const contentId = `content${note.id}`;
+    const accordionId = `accordion${note.id}`;
+    const timestampId = `timestamp${note.id}`;
+
+    const createdAtString = formatTime(note.created_at);
+    const updatedAtString = note.updated_at ? ` (edited at ${formatTime(note.updated_at)})` : "";
+
+    //Bootstrap accordion using ids defined above to change text, make buttons work and 
+    const divEl = document.createElement("div");
+    divEl.id = accordionId;
+    divEl.className = "accordion";
+    divEl.innerHTML = `
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <button class="accordion-button flex-grow-1 text-start collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#${collapseId}" aria-expanded="true" aria-controls="${collapseId}">
+                        ${note.title}
+                    </button>
+                    <div class="ms-2 flex-shrink-0">
+                        <button class="btn btn-sm btn-outline-primary me-1" id="${editBtnId}" title="Edit">✏️</button>
+                        <button class="btn btn-sm btn-outline-danger" id="${deleteBtnId}" title="Delete">🗑️</button>
+                    </div>
+                </div>
+            </h2>
+            <div id="${collapseId}" class="accordion-collapse collapse" data-bs-parent="#${accordionId}">
+                <div class="accordion-body">
+                    <p id="${contentId}">${note.content}</p>
+                    <small id="${timestampId}" class="text-muted">${createdAtString}${updatedAtString}</small>
+                </div>
+            </div>
+        </div>
+    `;
+
+    //add Listeners
+    divEl.querySelector(`#${editBtnId}`).addEventListener("click", () => handleEdit(note));
+    divEl.querySelector(`#${deleteBtnId}`).addEventListener("click", () => handleDelete(note));
+
+    document.getElementById("main-notes").appendChild(divEl);
+}
+
+function formatTime(utcDateString) {
+    const date = new Date(utcDateString);
+
+    // Get day, short month, year
+    const datePart = new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    }).format(date).replace(/ /g, "-"); // e.g. "17-Jul-2025"
+
+    // Get hour:minute and am/pm
+    const timePart = new Intl.DateTimeFormat("en-GB", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    }).format(date); // e.g. "2:53 AM"
+
+    return `${datePart} ${timePart}`;
+}
+
+function handleEdit(note) {
+    // Open an edit form, modal, etc.
+    console.log(`Editing note ${note.id}`);
+}
+
+function handleDelete(note) {
+    // Confirm and delete the note
+    console.log(`Deleting note ${note.id}`);
 }

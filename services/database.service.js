@@ -40,8 +40,16 @@ exports.createNote = async (uuid, title, content) => {
 
 exports.getNotesForUser = async (uuid) => {
     const notes = await sql`
-        SELECT * FROM notes
+        SELECT
+            id,
+            user_uuid,
+            title,
+            content,
+            created_at::timestamptz AS created_at,
+            updated_at::timestamptz AS updated_at
+        FROM notes
         WHERE user_uuid = ${uuid}
+        ORDER BY COALESCE(updated_at, created_at) DESC
     `;
     return notes;
 }
@@ -49,7 +57,7 @@ exports.getNotesForUser = async (uuid) => {
 exports.updateNote = async (uuid, noteId, title, content) => {
     const [note] = await sql`
         UPDATE notes
-        SET updated_at = now(), title=${title}, content=${content}
+        SET updated_at=now(), title=${title}, content=${content}
         WHERE id=${noteId} AND user_uuid=${uuid}
         RETURNING *
     `;

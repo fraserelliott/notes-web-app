@@ -35,7 +35,7 @@ signupForm.addEventListener("submit", async (e) => {
 
 async function attemptLogin(username, password) {
     try {
-        const res = await fetch("https://127.0.0.1:443/api/auth", {
+        const res = await fetch("/api/auth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
@@ -66,7 +66,7 @@ async function attemptLogin(username, password) {
 
 async function attemptSignup(username, password) {
     try {
-        const res = await fetch("https://127.0.0.1:443/api/users", {
+        const res = await fetch("/api/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
