@@ -12,6 +12,6 @@ userSchema.add("username", new StringField().required().minLength(8).maxLength(2
 userSchema.add("password", new StringField().required().minLength(8).maxLength(20));
 
 router.post("/", validate(userSchema), usersController.createUser);
-router.delete("/", validateToken, usersController.deleteUser);
+router.delete("/", validateToken(), usersController.deleteUser);
 
 module.exports = router;

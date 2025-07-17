@@ -10,9 +10,16 @@ document.getElementById("a-logout").addEventListener("click", logout);
 document.getElementById("btn-menu").textContent = `\u{1F464}${user.username}`;
 document.getElementById("btn-new-note").addEventListener("click", showNewNoteModal);
 document.getElementById("btn-save-note").addEventListener("click", saveNoteModal);
+document.getElementById("btn-confirm-delete-user").addEventListener("click", deleteUser);
 
-const modalEl = document.getElementById("modal-note");
-const modal = new bootstrap.Modal(modalEl);
+const noteModalEl = document.getElementById("modal-note");
+const noteModal = new bootstrap.Modal(noteModalEl);
+
+const deleteModalEl = document.getElementById("modal-delete-user");
+const deleteModal = new bootstrap.Modal(deleteModalEl);
+document.getElementById("a-delete").addEventListener("click", () => {
+    deleteModal.show();
+});
 
 const titleInput = document.getElementById("textarea-note-title");
 titleInput.addEventListener("input", () => {
@@ -40,6 +47,29 @@ function loadSessionData() {
 function logout() {
     sessionStorage.clear();
     window.location.replace("./index.html");
+}
+
+async function deleteUser() {
+    console.log("Deleting user with token: ", authToken);
+    try {
+        const res = await fetch("/api/users", {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${authToken}` },
+        });
+
+        console.log("res: ", res);
+
+        if (!res.ok) {
+            console.error("Error deleting user: ", data.error);
+            // TODO: error message popup with data.error
+            return;
+        }
+
+        logout();
+    } catch (err) {
+        // TODO: error message popup with data.error
+        console.error(err.message);
+    }
 }
 
 async function getNotes() {
@@ -133,7 +163,7 @@ function handleEdit(note) {
     noteModalState = noteModalStates.EDITNOTE;
     document.getElementById("textarea-note-title").value = note.title;
     document.getElementById("textarea-note-content").value = note.content;
-    modal.show();
+    noteModal.show();
 }
 
 async function handleDelete(note) {
@@ -166,7 +196,7 @@ function showNewNoteModal() {
     document.getElementById("textarea-note-title").value = "";
     document.getElementById("textarea-note-content").value = "";
     noteModalState = noteModalStates.ADDNOTE;
-    modal.show();
+    noteModal.show();
 }
 
 function saveNoteModal() {
@@ -198,7 +228,7 @@ async function addNoteFromModal() {
         }
 
         addNote(data.note, true);
-        modal.hide();
+        noteModal.hide();
     } catch (err) {
         // TODO: error message popup with data.error
         console.error(err.message);
@@ -228,7 +258,7 @@ async function editNoteFromModal() {
         document.getElementById(`accordion${note.id}`).remove();
         addNote(note, true);
 
-        modal.hide();
+        noteModal.hide();
     } catch (err) {
         // TODO: error message popup with data.error
         console.error(err.message);
