@@ -62,6 +62,7 @@ function addNote(note, addToTop) {
     const editBtnId = `btnEdit${note.id}`;
     const deleteBtnId = `btnDelete${note.id}`;
     const collapseId = `collapse${note.id}`;
+    const titleId = `title${note.id}`;
     const contentId = `content${note.id}`;
     const accordionId = `accordion${note.id}`;
     const timestampId = `timestamp${note.id}`;
@@ -77,7 +78,7 @@ function addNote(note, addToTop) {
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <button class="accordion-button flex-grow-1 text-start collapsed" type="button" data-bs-toggle="collapse"
+                    <button id=${titleId} class="accordion-button flex-grow-1 text-start collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#${collapseId}" aria-expanded="true" aria-controls="${collapseId}">
                         ${note.title}
                     </button>
@@ -149,10 +150,12 @@ function showNewNoteModal() {
 }
 
 function saveNoteModal() {
-    console.log(`saveNoteModal called. noteModalState=${noteModalState}`);
     switch (noteModalState) {
         case noteModalStates.ADDNOTE:
             addNoteFromModal();
+            break;
+        case noteModalStates.EDITNOTE:
+            editNoteFromModal();
             break;
     }
 }
@@ -161,21 +164,19 @@ async function addNoteFromModal() {
     try {
         const title = document.getElementById("textarea-note-title").value.trim();
         const content = document.getElementById("textarea-note-content").value.trim();
-        console.log(`title=${title}, content=${content}`);
         const res = await fetch("/api/notes", {
             method: "POST",
             headers: { "Authorization": `Bearer ${authToken}`, "Content-Type": "application/json" },
             body: JSON.stringify({ title, content })
         });
         const data = await res.json();
-        console.log("data: ", data);
 
         if (!res.ok) {
             console.error("Error creating note: ", data.error);
             // TODO: error message popup with data.error
             return;
         }
-        
+
         addNote(data.note, true);
         modal.hide();
     } catch (err) {
@@ -184,6 +185,32 @@ async function addNoteFromModal() {
     }
 }
 
-function editNoteFromModal() {
+async function editNoteFromModal() {
+    try {
+        const title = document.getElementById("textarea-note-title").value.trim();
+        const content = document.getElementById("textarea-note-content").value.trim();
+        const res = await fetch(`/api/notes/${editingNote.id}`, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${authToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ title, content })
+        });
 
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error("Error creating note: ", data.error);
+            // TODO: error message popup with data.error
+            return;
+        }
+
+        // Remove accordion and prepend a new note
+        const note = data.note;
+        document.getElementById(`accordion${note.id}`).remove();
+        addNote(note, true);
+
+        modal.hide();
+    } catch (err) {
+        // TODO: error message popup with data.error
+        console.error(err.message);
+    }
 }
