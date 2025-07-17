@@ -30,7 +30,6 @@ signupForm.addEventListener("submit", async (e) => {
     // TODO: input validation
 
     await attemptSignup(username, password);
-    await attemptLogin(username, password);
 });
 
 async function attemptLogin(username, password) {
@@ -72,11 +71,14 @@ async function attemptSignup(username, password) {
             body: JSON.stringify({ username, password })
         });
 
-        const data = await res.json().catch(() => ({}));
+        const data = await res.json();
 
         if (!res.ok) {
             // TODO: error message popup with data.error
+            return;
         }
+
+        await attemptLogin(username, password);
     } catch (err) {
         // TODO: error message popup with data.error
     }
