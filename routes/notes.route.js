@@ -7,8 +7,8 @@ const { validate } = require("../middleware/inputValidation.middleware");
 const { validateToken } = require("../middleware/auth.middleware")
 
 noteSchema = new FailSchema();
-noteSchema.add("title", new StringField().required());
-noteSchema.add("content", new StringField().required());
+noteSchema.add("title", new StringField().required().minLength(1));
+noteSchema.add("content", new StringField().required().minLength(1));
 
 router.post("/", validateToken(), validate(noteSchema), notesController.createNote);
 router.get("/", validateToken(), notesController.getNotesForUser);

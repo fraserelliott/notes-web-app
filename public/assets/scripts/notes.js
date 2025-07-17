@@ -1,3 +1,5 @@
+import { createToast } from "./toastUtils.js"; 
+
 const noteModalStates = {
     ADDNOTE: 0,
     EDITNOTE: 1
@@ -57,18 +59,16 @@ async function deleteUser() {
             headers: { "Authorization": `Bearer ${authToken}` },
         });
 
-        console.log("res: ", res);
-
         if (!res.ok) {
+            checkAuthFail(res);
+            createToast(data.error || "Error deleting user", "error-toast", 1500);
             console.error("Error deleting user: ", data.error);
-            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
         logout();
     } catch (err) {
-        // TODO: error message popup with data.error
-        console.error(err.message);
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
 }
 
@@ -80,22 +80,23 @@ async function getNotes() {
         });
 
         if (!res.ok) {
+            checkAuthFail(res);
+            createToast(data.error || "Error getting notes", "error-toast", 1500);
             console.error("Error getting notes: ", data.error);
-            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
         const data = await res.json();
 
         data.forEach(note => {
-            addNote(note, false);
+            addNoteToDOM(note, false);
         });
     } catch (err) {
-        // TODO: error message popup with data.error
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
 }
 
-function addNote(note, addToTop) {
+function addNoteToDOM(note, addToTop) {
     const editBtnId = `btnEdit${note.id}`;
     const deleteBtnId = `btnDelete${note.id}`;
     const collapseId = `collapse${note.id}`;
@@ -184,17 +185,16 @@ async function handleDelete(note) {
         const data = await res.json();
 
         if (!res.ok) {
+            checkAuthFail(res);
+            createToast(data.error || "Error deleting note", "error-toast", 1500);
             console.error("Error deleting note: ", data.error);
-            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
-        // TODO: success popup
-
         document.getElementById(`accordion${note.id}`).remove();
+        createToast("Successfully deleted note", "success-toast", 1500);
     } catch (err) {
-        // TODO: error message popup with data.error
-        console.error(err.message);
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
 }
 
@@ -229,16 +229,17 @@ async function addNoteFromModal() {
         const data = await res.json();
 
         if (!res.ok) {
+            checkAuthFail(res);
+            createToast(data.error || "Error creating note", "error-toast", 1500);
             console.error("Error creating note: ", data.error);
-            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
-        addNote(data.note, true);
+        addNoteToDOM(data.note, true);
         noteModal.hide();
+        createToast("Successfully created note", "success-toast", 1500);
     } catch (err) {
-        // TODO: error message popup with data.error
-        console.error(err.message);
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
 }
 
@@ -255,19 +256,25 @@ async function editNoteFromModal() {
         const data = await res.json();
 
         if (!res.ok) {
-            console.error("Error creating note: ", data.error);
-            // TODO: error message popup with data.error. Check for authentication error to force logout.
+            checkAuthFail(res);
+            createToast(data.error || "Error editing note", "error-toast", 1500);
+            console.error("Error editing note: ", data.error);
             return;
         }
 
         // Remove accordion and prepend a new note
         const note = data.note;
         document.getElementById(`accordion${note.id}`).remove();
-        addNote(note, true);
+        addNoteToDOM(note, true);
 
         noteModal.hide();
+        createToast("Successfully saved note", "success-toast", 1500);
     } catch (err) {
-        // TODO: error message popup with data.error
-        console.error(err.message);
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
+}
+
+function checkAuthFail(res) {
+    if (res.status == 401)
+        logout();
 }
