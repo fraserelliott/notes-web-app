@@ -35,15 +35,19 @@ exports.createUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
     try {
         const user = await dbService.deleteUser(req.user.uuid);
-        
         if (!user)
             res.status(403).json({ error: "User not found or unauthorized." })
 
+        // Delete all notes for them as well
+        const notes = await dbService.deleteNotesForUser(req.user.uuid);
+        if (!notes)
+            res.status(403).json({ error: "User not found or unauthorized." })
+
         res.status(204).json({
-            message: "User deleted successfully.",
+            message: "User and notes deleted successfully.",
             user
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete user." });
+        res.status(500).json({ error: "Failed to delete user or notes." });
     }
 }

@@ -84,3 +84,12 @@ exports.deleteNote = async (uuid, noteId) => {
     `;
     return note;
 }
+
+exports.deleteNotesForUser = async (uuid) => {
+    const notes = await sql`
+        DELETE FROM notes
+        WHERE user_uuid=${uuid}
+        RETURNING *
+    `
+    return notes;
+}
