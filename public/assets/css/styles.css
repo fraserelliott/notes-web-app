@@ -25,6 +25,12 @@
     top: 0.5rem;
 }
 
+#btn-new-note {
+    position: absolute;
+    left: 1rem;
+    top: 0.5em;
+}
+
 .accordion-header-btn {
     width: 3rem;
 }

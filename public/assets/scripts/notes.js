@@ -1,10 +1,9 @@
-document.getElementById("a-logout").addEventListener("click", logout);
-
 const { authToken, user } = loadSessionData();
 
+document.getElementById("a-logout").addEventListener("click", logout);
 document.getElementById("btn-menu").textContent = `\u{1F464}${user.username}`;
 
-getNotes();
+getNotes(); // Run this on startup to populate page and it has an automated logout for malformed/missing sessionStorage data
 
 function loadSessionData() {
     try {
@@ -33,6 +32,7 @@ async function getNotes() {
         });
         const data = await res.json();
         console.log(data);
+
         data.forEach(note => {
             addNote(note);
         });
@@ -42,7 +42,6 @@ async function getNotes() {
 }
 
 function addNote(note) {
-    console.log("Adding note: ", note);
     const editBtnId = `btnEdit${note.id}`;
     const deleteBtnId = `btnDelete${note.id}`;
     const collapseId = `collapse${note.id}`;
@@ -53,7 +52,7 @@ function addNote(note) {
     const createdAtString = formatTime(note.created_at);
     const updatedAtString = note.updated_at ? ` (edited at ${formatTime(note.updated_at)})` : "";
 
-    //Bootstrap accordion using ids defined above to change text, make buttons work and 
+    //Bootstrap accordion using ids defined above to change content later if required and to add listeners to buttons
     const divEl = document.createElement("div");
     divEl.id = accordionId;
     divEl.className = "accordion";
@@ -67,7 +66,7 @@ function addNote(note) {
                     </button>
                     <div class="ms-2 flex-shrink-0">
                         <button class="btn btn-sm btn-outline-primary me-1" id="${editBtnId}" title="Edit">✏️</button>
-                        <button class="btn btn-sm btn-outline-danger" id="${deleteBtnId}" title="Delete">🗑️</button>
+                        <button class="btn btn-sm btn-outline-danger me-1" id="${deleteBtnId}" title="Delete">🗑️</button>
                     </div>
                 </div>
             </h2>
@@ -80,7 +79,7 @@ function addNote(note) {
         </div>
     `;
 
-    //add Listeners
+    //add Listeners to buttons created in the innerHTML
     divEl.querySelector(`#${editBtnId}`).addEventListener("click", () => handleEdit(note));
     divEl.querySelector(`#${deleteBtnId}`).addEventListener("click", () => handleDelete(note));
 
