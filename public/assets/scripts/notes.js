@@ -61,7 +61,7 @@ async function deleteUser() {
 
         if (!res.ok) {
             console.error("Error deleting user: ", data.error);
-            // TODO: error message popup with data.error
+            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
@@ -78,6 +78,13 @@ async function getNotes() {
             method: "GET",
             headers: { "Authorization": `Bearer ${authToken}` }
         });
+
+        if (!res.ok) {
+            console.error("Error getting notes: ", data.error);
+            // TODO: error message popup with data.error. Check for authentication error to force logout.
+            return;
+        }
+
         const data = await res.json();
 
         data.forEach(note => {
@@ -178,7 +185,7 @@ async function handleDelete(note) {
 
         if (!res.ok) {
             console.error("Error deleting note: ", data.error);
-            // TODO: error message popup with data.error
+            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
@@ -223,7 +230,7 @@ async function addNoteFromModal() {
 
         if (!res.ok) {
             console.error("Error creating note: ", data.error);
-            // TODO: error message popup with data.error
+            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
@@ -240,7 +247,7 @@ async function editNoteFromModal() {
         const title = document.getElementById("textarea-note-title").value.trim();
         const content = document.getElementById("textarea-note-content").value.trim();
         const res = await fetch(`/api/notes/${editingNote.id}`, {
-            method: "PATCH",
+            method: "PUT",
             headers: { "Authorization": `Bearer ${authToken}`, "Content-Type": "application/json" },
             body: JSON.stringify({ title, content })
         });
@@ -249,7 +256,7 @@ async function editNoteFromModal() {
 
         if (!res.ok) {
             console.error("Error creating note: ", data.error);
-            // TODO: error message popup with data.error
+            // TODO: error message popup with data.error. Check for authentication error to force logout.
             return;
         }
 
