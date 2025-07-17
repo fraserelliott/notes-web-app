@@ -136,9 +136,29 @@ function handleEdit(note) {
     modal.show();
 }
 
-function handleDelete(note) {
+async function handleDelete(note) {
     // Confirm and delete the note
-    console.log(`Deleting note ${note.id}`);
+    try {
+        const res = await fetch(`/api/notes/${note.id}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${authToken}` },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error("Error deleting note: ", data.error);
+            // TODO: error message popup with data.error
+            return;
+        }
+
+        // TODO: success popup
+
+        document.getElementById(`accordion${note.id}`).remove();
+    } catch (err) {
+        // TODO: error message popup with data.error
+        console.error(err.message);
+    }
 }
 
 function showNewNoteModal() {
