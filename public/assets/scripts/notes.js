@@ -27,7 +27,6 @@ const titleInput = document.getElementById("textarea-note-title");
 titleInput.addEventListener("input", () => {
     titleInput.style.height = "auto";
     titleInput.style.height = titleInput.scrollHeight + "px";
-    // TODO: trim to max length
 });
 
 getNotes(); // Run this on page load to populate page, it has an automated logout for malformed/missing sessionStorage data

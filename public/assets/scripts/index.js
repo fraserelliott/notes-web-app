@@ -1,4 +1,5 @@
 import { FailSchema, StringField } from "./fail.esm.js";
+import { createToast } from "./toastUtils.js";
 
 // Check for valid token to redirect on page load
 if (sessionStorage.getItem("auth-token")) {
@@ -48,7 +49,7 @@ async function attemptLogin(username, password) {
         });
 
         if (!res.ok) {
-            // TODO: error message popup with data.error
+            createToast(data.error, "error-toast", 1500);
             return;
         }
 
@@ -66,7 +67,7 @@ async function attemptLogin(username, password) {
         sessionStorage.setItem("user", JSON.stringify(user));
         window.location.replace("./notes.html");
     } catch (err) {
-        // TODO: error message popup with data.error
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
 }
 
@@ -81,13 +82,13 @@ async function attemptSignup(username, password) {
         const data = await res.json();
 
         if (!res.ok) {
-            // TODO: error message popup with data.error
+            createToast(data.error, "error-toast", 1500);
             return;
         }
 
         await attemptLogin(username, password);
     } catch (err) {
-        // TODO: error message popup with data.error
+        createToast(err.message || "Server error", "error-toast", 1500);
     }
 }
 
