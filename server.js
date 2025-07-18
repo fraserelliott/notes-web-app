@@ -20,10 +20,14 @@ app.use(cors());
 
 app.use("/api", routes);
 
+app.all(/.*/, (req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "404.html"));
+})
+
 // Global error handler to return JSON error responses
 app.use((err, req, res, next) => {
   console.error("Error:", err.message); // log cleanly to console
-  res.status(500).json({ error: err.message});
+  res.status(500).json({ error: err.message });
 });
 
 // Start HTTPS server with SSL cert on port 443
