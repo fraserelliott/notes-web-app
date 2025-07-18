@@ -175,7 +175,6 @@ function handleEdit(note) {
 }
 
 async function handleDelete(note) {
-    // Confirm and delete the note
     try {
         const res = await fetch(`/api/notes/${note.id}`, {
             method: "DELETE",

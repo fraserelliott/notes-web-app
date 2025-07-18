@@ -44,6 +44,16 @@ textarea {
     resize: none;
 }
 
+input.invalid {
+  border: 2px solid #dc3545; /* Bootstrap danger red */
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Soft red glow */
+}
+
+input.valid {
+  border: 2px solid #28a745; /* Bootstrap success green */
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Soft green glow */
+}
+
 /* bootstrap overrides */
 
 .modal-body {

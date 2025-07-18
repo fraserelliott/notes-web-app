@@ -12,6 +12,8 @@ function toggleForms() {
 }
 
 const loginForm = document.getElementById("form-login");
+loginForm.username.addEventListener("input", validateLoginForm);
+loginForm.password.addEventListener("input", validateLoginForm);
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = loginForm.username.value;
@@ -81,5 +83,29 @@ async function attemptSignup(username, password) {
         await attemptLogin(username, password);
     } catch (err) {
         // TODO: error message popup with data.error
+    }
+}
+
+function validateLoginForm() {
+    const username = loginForm.username.value;
+    const password = loginForm.password.value;
+
+    // Update form based on whether username and password are empty
+    updateInputClass(loginForm.username, username);
+    updateInputClass(loginForm.password, password);
+
+    if (!username || !password)
+        loginForm.submit.disabled = true;
+    else
+        loginForm.submit.disabled = false;
+}
+
+function updateInputClass(inputEl, validated) {
+    if (validated) {
+        inputEl.classList.add("valid");
+        inputEl.classList.remove("invalid");
+    } else {
+        inputEl.classList.remove("valid");
+        inputEl.classList.add("invalid");
     }
 }
