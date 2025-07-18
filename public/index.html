@@ -23,7 +23,7 @@
         <button id="btn-show-signup" class="btn">Sign Up</button>
     </section>
 
-    <section class="indexform d-none" id="section-signup">
+    <section class="indexform" id="section-signup">
         <form id="form-signup" class="indexform w-100">
             <label for="input-signup-username">Username: </label>
             <input type="text" id="input-signup-username" name="username">
@@ -32,6 +32,11 @@
             <button id="btn-signup" class="btn" type="submit" name="submit" disabled="true">Register</button>
         </form>
         <button id="btn-show-login" class="btn">Back to Login</button>
+
+        <p id="p-username-length">Username must be 8-20 characters</p>
+        <p id="p-password-length">Password must be 8-20 characters</p>
+        <p id="p-username-characters">Username must be alphanumeric (no special characters)</p>
+        <p id="p-password-characters">Password must include at least 1 special character.</p>
     </section>
 
     <script type="module" src="./assets/scripts/index.js"></script>

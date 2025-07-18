@@ -54,6 +54,14 @@ input.valid {
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Soft green glow */
 }
 
+p.invalid {
+    color: #dc3545;
+}
+
+p.valid {
+    color: #28a745;
+}
+
 /* bootstrap overrides */
 
 .modal-body {

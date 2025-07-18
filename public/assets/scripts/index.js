@@ -1,3 +1,5 @@
+import { FailSchema, StringField } from "./fail.esm.js";
+
 // Check for valid token to redirect on page load
 if (sessionStorage.getItem("auth-token")) {
     window.location.replace("./notes.html");
@@ -21,8 +23,6 @@ loginForm.addEventListener("submit", async (e) => {
     const username = loginForm.username.value;
     const password = loginForm.password.value;
 
-    // TODO: input validation
-
     await attemptLogin(username, password);
 });
 
@@ -35,7 +35,6 @@ signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = signupForm.username.value;
     const password = signupForm.password.value;
-    // TODO: input validation
 
     await attemptSignup(username, password);
 });
@@ -110,14 +109,64 @@ function validateSignupForm() {
     const username = signupForm.username.value;
     const password = signupForm.password.value;
 
-    // Update form based on whether username and password are empty
-    updateInputClass(signupForm.username, username);
-    updateInputClass(signupForm.password, password);
+    // Same schema as used in the API for a post to /api/users
+    const userSchema = new FailSchema();
+    userSchema.add("username", new StringField().required().minLength(8).maxLength(20).alphanumeric());
+    userSchema.add("password", new StringField().required().minLength(8).maxLength(20).regex(/[!@#$%^&*(),.?":{}|<>_\-\\[\]=+;'/`~\/]/));
 
-    if (!username || !password)
-        signupForm.submit.disabled = true;
-    else
+    // ruleMap corresponds to the list of <p> elements beneath the signup form and the validation rules they refer to
+    const ruleMap = {
+        "username-length": {
+            elementId: "p-username-length",
+            rules: [
+                { field: "username", rule: "minLength" },
+                { field: "username", rule: "maxLength" }
+            ]
+        },
+        "password-length": {
+            elementId: "p-password-length",
+            rules: [
+                { field: "password", rule: "minLength" },
+                { field: "password", rule: "maxLength" }
+            ]
+        },
+        "username-characters": {
+            elementId: "p-username-characters",
+            rules: [
+                { field: "username", rule: "alphanumeric" }
+            ]
+        },
+        "password-specialChar": {
+            elementId: "p-password-characters",
+            rules: [
+                { field: "password", rule: "regex" }
+            ]
+        }
+    };
+
+    let success = true;
+
+    // Callback to update each <p> element's class based on rule success
+    const callback = (key, errors, meta) => {
+        const el = document.getElementById(meta.elementId);
+        if (!el) return;
+
+        if (errors.length === 0) {
+            el.classList.remove("invalid");
+            el.classList.add("valid");
+        } else {
+            el.classList.remove("valid");
+            el.classList.add("invalid");
+            success = false;
+        }
+    };
+
+    userSchema.validateAllWithCallback({ username, password}, callback, ruleMap);
+
+    if (success)
         signupForm.submit.disabled = false;
+    else
+        signupForm.submit.disabled = true;
 }
 
 function updateInputClass(inputEl, validated) {

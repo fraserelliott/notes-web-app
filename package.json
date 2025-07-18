@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "build:browser": "npx esbuild src/validate.js --bundle --minify --outfile=public/assets/scripts/validate.esm.js --format=esm"
+    "copy-lib": "cp ./node_modules/@fraserelliott/fail/dist/fail.esm.js ./public/assets/scripts"
   },
   "keywords": [],
   "author": "",
