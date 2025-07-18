@@ -14,6 +14,8 @@ function toggleForms() {
 const loginForm = document.getElementById("form-login");
 loginForm.username.addEventListener("input", validateLoginForm);
 loginForm.password.addEventListener("input", validateLoginForm);
+loginForm.username.addEventListener("blur", validateLoginForm);
+loginForm.password.addEventListener("blur", validateLoginForm);
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = loginForm.username.value;
@@ -25,6 +27,10 @@ loginForm.addEventListener("submit", async (e) => {
 });
 
 const signupForm = document.getElementById("form-signup");
+signupForm.username.addEventListener("input", validateSignupForm);
+signupForm.password.addEventListener("input", validateSignupForm);
+signupForm.username.addEventListener("blur", validateSignupForm);
+signupForm.password.addEventListener("blur", validateSignupForm);
 signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = signupForm.username.value;
@@ -98,6 +104,20 @@ function validateLoginForm() {
         loginForm.submit.disabled = true;
     else
         loginForm.submit.disabled = false;
+}
+
+function validateSignupForm() {
+    const username = signupForm.username.value;
+    const password = signupForm.password.value;
+
+    // Update form based on whether username and password are empty
+    updateInputClass(signupForm.username, username);
+    updateInputClass(signupForm.password, password);
+
+    if (!username || !password)
+        signupForm.submit.disabled = true;
+    else
+        signupForm.submit.disabled = false;
 }
 
 function updateInputClass(inputEl, validated) {
