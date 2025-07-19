@@ -81,6 +81,10 @@ textarea {
   resize: none;
 }
 
+input {
+  background: var(--bg-content);
+}
+
 input.invalid {
   border: 2px solid #dc3545;
   /* Bootstrap danger red */
