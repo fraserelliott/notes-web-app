@@ -9,6 +9,10 @@ const userSchema = new FailSchema();
 userSchema.add("username", new StringField().required());
 userSchema.add("password", new StringField().required());
 
-router.post("/", validate(userSchema), authController.login);
+// router.post("/", validate(userSchema), authController.login);
+app.post('/', (req, res) => {
+  console.log("Request body:", req.body);
+  res.json({ received: req.body });
+});
 
 module.exports = router;

@@ -51,14 +51,12 @@ async function attemptLogin(username, password) {
             body: JSON.stringify({ username, password })
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
             createToast(data.error, "error-toast", 1500);
             return;
         }
-
-        const data = await res.json();
-
-        console.log(data);
 
         sessionStorage.setItem("auth-token", data.token);
         const user = {
