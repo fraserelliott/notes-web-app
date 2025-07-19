@@ -6,7 +6,7 @@ https://notes-web-app-x4hk.onrender.com/
 
 ## Description
 
-A notes webb app made using Node.js, Express and FAIL (https://github.com/fraserelliott/fail). The backend is a RESTful API handling user creation, deletion and login with routes for CRUD operations for notes that require authentication.
+A notes web app made using Node.js, Express and FAIL (https://github.com/fraserelliott/fail). The backend is a RESTful API handling user creation, deletion and login with routes for CRUD operations for notes that require authentication.
 
 ---
 
