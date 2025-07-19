@@ -9,6 +9,7 @@ if (sessionStorage.getItem("auth-token")) {
 document.getElementById("btn-show-signup").addEventListener("click", toggleForms);
 document.getElementById("btn-show-login").addEventListener("click", toggleForms);
 
+// Toggles visibility of login/signup forms
 function toggleForms() {
     document.getElementById("section-login").classList.toggle("d-none");
     document.getElementById("section-signup").classList.toggle("d-none");
@@ -40,6 +41,7 @@ signupForm.addEventListener("submit", async (e) => {
     await attemptSignup(username, password);
 });
 
+// Attempts login via a POST and stores token received in sessionStorage
 async function attemptLogin(username, password) {
     try {
         const res = await fetch("/api/auth", {
@@ -71,6 +73,7 @@ async function attemptLogin(username, password) {
     }
 }
 
+// Attempt sign up to store account in database then login
 async function attemptSignup(username, password) {
     try {
         const res = await fetch("/api/users", {
@@ -106,6 +109,7 @@ function validateLoginForm() {
         loginForm.submit.disabled = false;
 }
 
+// This updates the set of <p> elements under the signup form listing field requirements.
 function validateSignupForm() {
     const username = signupForm.username.value;
     const password = signupForm.password.value;
@@ -115,7 +119,7 @@ function validateSignupForm() {
     userSchema.add("username", new StringField().required().minLength(8).maxLength(20).alphanumeric());
     userSchema.add("password", new StringField().required().minLength(8).maxLength(20).regex(/[!@#$%^&*(),.?":{}|<>_\-\\[\]=+;'/`~\/]/));
 
-    // ruleMap corresponds to the list of <p> elements beneath the signup form and the validation rules they refer to
+    // ruleMap links DOM elements to schema validation rules
     const ruleMap = {
         "username-length": {
             elementId: "p-username-length",
@@ -147,7 +151,7 @@ function validateSignupForm() {
 
     let success = true;
 
-    // Callback to update each <p> element's class based on rule success
+    // Callback used by schema validator to visually mark success/failure for each rule
     const callback = (key, errors, meta) => {
         const el = document.getElementById(meta.elementId);
         if (!el) return;

@@ -31,6 +31,7 @@ titleInput.addEventListener("input", () => {
 
 getNotes(); // Run this on page load to populate page, it has an automated logout for malformed/missing sessionStorage data
 
+// Load auth token and user info from sessionStorage or force log out if invalid
 function loadSessionData() {
     try {
         let authToken = sessionStorage.getItem("auth-token");
@@ -50,6 +51,7 @@ function logout() {
     window.location.replace("./index.html");
 }
 
+// Send request to delete user account, then log out on success
 async function deleteUser() {
     console.log("Deleting user with token: ", authToken);
     try {
@@ -71,6 +73,7 @@ async function deleteUser() {
     }
 }
 
+// Fetch and display all notes for the current user on page load
 async function getNotes() {
     try {
         const res = await fetch("/api/notes", {
@@ -95,7 +98,9 @@ async function getNotes() {
     }
 }
 
+// Create and insert a Bootstrap accordion component with edit/delete buttons for the given note.
 function addNoteToDOM(note, addToTop) {
+    // Generate unique IDs corresponding to the note's ID which is unique in the database
     const editBtnId = `btnEdit${note.id}`;
     const deleteBtnId = `btnDelete${note.id}`;
     const collapseId = `collapse${note.id}`;
@@ -107,7 +112,7 @@ function addNoteToDOM(note, addToTop) {
     const createdAtString = formatTime(note.created_at);
     const updatedAtString = note.updated_at ? ` (edited at ${formatTime(note.updated_at)})` : "";
 
-    //Bootstrap accordion using ids defined above to change content later if required and to add listeners to buttons
+    // Create a Bootstrap accordion component using these IDs and data from the note
     const divEl = document.createElement("div");
     divEl.id = accordionId;
     divEl.className = "accordion";
@@ -134,7 +139,7 @@ function addNoteToDOM(note, addToTop) {
         </div>
     `;
 
-    //add Listeners to buttons created in the innerHTML
+    // Attach event listeners to the edit and delete buttons
     divEl.querySelector(`#${editBtnId}`).addEventListener("click", () => handleEdit(note));
     divEl.querySelector(`#${deleteBtnId}`).addEventListener("click", () => handleDelete(note));
 
@@ -144,6 +149,7 @@ function addNoteToDOM(note, addToTop) {
         document.getElementById("main-notes").appendChild(divEl);
 }
 
+// Format a UTC timestamp to a readable string (e.g. 17-Jul-2025 2:53 AM)
 function formatTime(utcDateString) {
     const date = new Date(utcDateString);
 
@@ -164,6 +170,7 @@ function formatTime(utcDateString) {
     return `${datePart} ${timePart}`;
 }
 
+// Load existing note content into modal for editing
 function handleEdit(note) {
     // set variables used in the editNoteFromModal function
     editingNote = note;
@@ -173,6 +180,7 @@ function handleEdit(note) {
     noteModal.show();
 }
 
+// Delete a note via API and remove it from the DOM
 async function handleDelete(note) {
     try {
         const res = await fetch(`/api/notes/${note.id}`, {
@@ -196,6 +204,7 @@ async function handleDelete(note) {
     }
 }
 
+// Prepare modal for adding a new note
 function showNewNoteModal() {
     // Reset values for title and content textareas. Set variable used in saveNoteModal function called by the modal's save button
     document.getElementById("textarea-note-title").value = "";
@@ -204,6 +213,7 @@ function showNewNoteModal() {
     noteModal.show();
 }
 
+// Handle modal save button event, noteModalState is set when opening it
 function saveNoteModal() {
     switch (noteModalState) {
         case noteModalStates.ADDNOTE:
@@ -215,6 +225,7 @@ function saveNoteModal() {
     }
 }
 
+// Send new note data to API and add to top of notes list
 async function addNoteFromModal() {
     try {
         const title = document.getElementById("textarea-note-title").value.trim();
@@ -241,6 +252,7 @@ async function addNoteFromModal() {
     }
 }
 
+// Send updated note data to API and refresh note in DOM
 async function editNoteFromModal() {
     try {
         const title = document.getElementById("textarea-note-title").value.trim();
@@ -272,6 +284,7 @@ async function editNoteFromModal() {
     }
 }
 
+// Force logout on API authorisation error
 function checkAuthFail(res) {
     if (res.status == 401)
         logout();
