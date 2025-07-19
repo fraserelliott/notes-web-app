@@ -13,6 +13,7 @@ document.getElementById("btn-show-login").addEventListener("click", toggleForms)
 function toggleForms() {
     document.getElementById("section-login").classList.toggle("d-none");
     document.getElementById("section-signup").classList.toggle("d-none");
+    document.getElementById("section-signup-rules").classList.toggle("d-none");
 }
 
 const loginForm = document.getElementById("form-login");

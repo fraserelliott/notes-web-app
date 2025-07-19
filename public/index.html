@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link href="./assets/css/styles.css" rel="stylesheet">
+
     <title>Notes</title>
 </head>
 
@@ -15,32 +17,34 @@
         <h1 class="page-title">Notes</h1>
     </header>
 
-    <section class="indexform" id="section-login">
+    <section class="indexform my-5 panel p-5" id="section-login">
         <form id="form-login" class="indexform w-100">
-            <label for="input-username">Username: </label>
-            <input type="text" id="input-username" name="username">
-            <label for="input-password">Password: </label>
-            <input type="password" id="input-password" name="password">
-            <button id="btn-login" class="btn" type="submit" name="submit" disabled="true">Login</button>
+            <label for="input-username" class="my-1">Username: </label>
+            <input type="text" id="input-username" class="my-1" name="username">
+            <label for="input-password" class="my-1">Password: </label>
+            <input type="password" id="input-password" class="my-1" name="password">
+            <button id="btn-login" class="btn my-1" type="submit" name="submit" disabled="true">Login</button>
         </form>
-        <button id="btn-show-signup" class="btn">Sign Up</button>
+        <button id="btn-show-signup" class="btn my-1">Sign Up</button>
     </section>
 
-    <section class="indexform d-none" id="section-signup">
+    <section class="indexform p-5 panel my-5 d-none" id="section-signup">
         <form id="form-signup" class="indexform w-100">
-            <label for="input-signup-username">Username: </label>
-            <input type="text" id="input-signup-username" name="username">
-            <label for="input-signup-password">Password: </label>
-            <input type="password" id="input-signup-password" name="password">
-            <button id="btn-signup" class="btn" type="submit" name="submit" disabled="true">Register</button>
+            <label for="input-signup-username" class="my-1">Username: </label>
+            <input type="text" id="input-signup-username" class="my-1" name="username">
+            <label for="input-signup-password"class="my-1">Password: </label>
+            <input type="password" id="input-signup-password" class="my-1" name="password">
+            <button id="btn-signup" class="btn my-1" type="submit" name="submit" disabled="true">Register</button>
         </form>
-        <button id="btn-show-login" class="btn">Back to Login</button>
+        <button id="btn-show-login" class="btn my-1">Back to Login</button>
+    </section>
 
+    <div class="my-4 panel p-2 indexform d-none" id="section-signup-rules">
         <p id="p-username-length">Username must be 8-20 characters.</p>
         <p id="p-password-length">Password must be 8-20 characters.</p>
         <p id="p-username-characters">Username must be alphanumeric (no special characters).</p>
         <p id="p-password-characters">Password must include at least 1 special character.</p>
-    </section>
+    </div>
 
     <footer class="text-center bg-dark w-100 text-white footer">
         &copy; Fraser Elliott 2025
