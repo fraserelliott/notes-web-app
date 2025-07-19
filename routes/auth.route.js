@@ -9,6 +9,6 @@ const userSchema = new FailSchema();
 userSchema.add("username", new StringField().required());
 userSchema.add("password", new StringField().required());
 
-// router.post("/", validate(userSchema), authController.login);
+router.post("/", validate(userSchema), authController.login);
 
 module.exports = router;

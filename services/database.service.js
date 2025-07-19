@@ -1,7 +1,8 @@
 const postgres = require("postgres");
-const sql = postgres(process.env.DATABASEURL, {
+const sql = postgres(process.env.DATABASE_URL, {
     ssl: "require"
 });
+console.log("DATABASE_URL used: ", process.env.DATABASE_URL);
 
 exports.createUser = async (username, pwhash) => {
     const [user] = await sql`

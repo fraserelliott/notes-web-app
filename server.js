@@ -14,11 +14,6 @@ app.use(cors());
 
 app.use("/api", routes);
 
-app.post('/api/auth', (req, res) => {
-  console.log("Request body:", req.body);
-  res.json({ received: req.body });
-});
-
 app.all(/.*/, (req, res) => {
   res.status(404).sendFile(path.join(__dirname, "404.html"));
 });
